@@ -15,12 +15,8 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopDocsCollector;
-import org.apache.lucene.search.TopFieldCollector;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.BytesRef;
@@ -33,27 +29,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.owngoogle.Constants.PAGE_SIZE;
-import static com.example.owngoogle.Constants.SORTING_ALPHABETICALLY;
+import static com.example.owngoogle.Constants.*;
+import static com.example.owngoogle.storage.CollectorFactory.getTopDocsCollector;
 import static org.apache.lucene.document.Field.Store.YES;
-import static org.apache.lucene.search.SortField.Type.STRING;
 
 @Component
 public class SiteStorage implements ISiteStorage {
 
 	private static final Logger log = LoggerFactory.getLogger(SiteStorage.class);
 
-	private final StandardAnalyzer standardAnalyzer = new StandardAnalyzer();
-	private final Directory directory = new RAMDirectory();
-	private final IndexWriterConfig config = new IndexWriterConfig(standardAnalyzer);
-	private final IndexWriter writer = new IndexWriter(directory, config);
-
-	private static final String FIELD_NAME_CONTENT = "content";
-	private static final String FIELD_NAME_DESCRIPTION_SORTING = "descrsorting";
-	private static final String FIELD_NAME_DESCRIPTION = "description";
-	private static final String FIELD_NAME_LINK = "link";
+	private final Directory directory;
+	private final StandardAnalyzer standardAnalyzer;
+	private final IndexWriter writer;
 
 	public SiteStorage() throws IOException {
+		this.directory = new RAMDirectory();
+		this.standardAnalyzer = new StandardAnalyzer();
+		IndexWriterConfig config = new IndexWriterConfig(standardAnalyzer);
+		this.writer = new IndexWriter(directory, config);
 	}
 
 	@PostConstruct
@@ -64,11 +57,11 @@ public class SiteStorage implements ISiteStorage {
 	public void add(StorageItem item){
 		try {
 			Document document = new Document();
-			document.add(new TextField(FIELD_NAME_DESCRIPTION, item.getDescription(), YES));
-			document.add(new SortedDocValuesField(FIELD_NAME_DESCRIPTION_SORTING, new BytesRef(item.getDescription())));
-			document.add(new TextField(FIELD_NAME_CONTENT, item.getBody(), YES));
-			document.add(new TextField(FIELD_NAME_LINK, item.getUrl(), YES));
-			final Term term = new Term(FIELD_NAME_LINK, item.getUrl());
+			document.add(new TextField(SITE_STORAGE_FIELD_NAME_DESCRIPTION, item.getDescription(), YES));
+			document.add(new SortedDocValuesField(SITE_STORAGE_FIELD_NAME_DESCRIPTION_SORTING, new BytesRef(item.getDescription())));
+			document.add(new TextField(SITE_STORAGE_FIELD_NAME_CONTENT, item.getBody(), YES));
+			document.add(new TextField(SITE_STORAGE_FIELD_NAME_LINK, item.getUrl(), YES));
+			final Term term = new Term(SITE_STORAGE_FIELD_NAME_LINK, item.getUrl());
 			writer.updateDocument(term, document);
 			writer.commit();
 		} catch (IOException e) {
@@ -97,31 +90,20 @@ public class SiteStorage implements ISiteStorage {
 		}
 	}
 
-	private TopDocsCollector<? extends ScoreDoc> getTopDocsCollector(int page, String sorting) {
-		TopDocsCollector<? extends ScoreDoc> collector;
-		if (SORTING_ALPHABETICALLY.equalsIgnoreCase(sorting)) {
-			final Sort sort = new Sort(new SortField(FIELD_NAME_DESCRIPTION_SORTING, STRING));
-			collector = TopFieldCollector.create(sort, (page + 1) * PAGE_SIZE, 1);
-		} else {
-			collector = TopScoreDocCollector.create((page + 1) * PAGE_SIZE, 1);
-		}
-		return collector;
-	}
-
 	private QueryParser getQueryParser() {
 		return new MultiFieldQueryParser(
 						new String[] {
-								FIELD_NAME_CONTENT,
-								FIELD_NAME_DESCRIPTION,
-								FIELD_NAME_LINK
+								SITE_STORAGE_FIELD_NAME_CONTENT,
+								SITE_STORAGE_FIELD_NAME_DESCRIPTION,
+								SITE_STORAGE_FIELD_NAME_LINK
 						},
 						standardAnalyzer);
 	}
 
 	private StorageItem mapToStorageItem(Document resultDoc) {
-		final String description = resultDoc.get(FIELD_NAME_DESCRIPTION);
-		final String content = resultDoc.get(FIELD_NAME_CONTENT);
-		final String link = resultDoc.get(FIELD_NAME_LINK);
+		final String description = resultDoc.get(SITE_STORAGE_FIELD_NAME_DESCRIPTION);
+		final String content = resultDoc.get(SITE_STORAGE_FIELD_NAME_CONTENT);
+		final String link = resultDoc.get(SITE_STORAGE_FIELD_NAME_LINK);
 		return new StorageItem(link, description, content);
 	}
 }

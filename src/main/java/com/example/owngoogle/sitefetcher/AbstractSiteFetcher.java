@@ -50,7 +50,7 @@ public abstract class AbstractSiteFetcher implements ISiteFetcher {
 			handleInnerUrls(deepness);
 		} catch (SSLHandshakeException e) {
 			log.error("Fetcher:: Impossible to handle SSL connection");
-		} catch (IOException e) {
+		} catch (IOException | IllegalArgumentException e) {
 			String errorMessage = String.format("Fetcher:: Impossible to fetch site %s", url);
 			log.error(errorMessage, e);
 		}

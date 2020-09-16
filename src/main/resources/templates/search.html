@@ -37,13 +37,25 @@
                     </th:block>
                 </div>
             </div>
-            <div  th:if="${totalHits > 10*page}">
-                <form action="/search" method="post">
-                    <input type="hidden" id="oldQuery" name="q" required th:value="${query}">
-                    <input type="hidden" name="p" th:value="${page + 1}">
-                    <input type="submit" id="sbmt" value="Load more...">
-                </form>
+
+            <div>
+                <div  th:if="${page > 1}" style="float:left; width:150px">
+                    <form action="/search" method="post">
+                        <input type="hidden" name="q" required th:value="${query}">
+                        <input type="hidden" name="p" th:value="${page - 1}">
+                        <input type="submit" value="Load previous..." style="width:120px">
+                    </form>
+                </div>
+
+                <div  th:if="${totalHits > 10*page}" style="float:left; width:150px">
+                    <form action="/search" method="post">
+                        <input type="hidden" name="q" required th:value="${query}">
+                        <input type="hidden" name="p" th:value="${page + 1}">
+                        <input type="submit" value="Load next..." style="width:120px">
+                    </form>
+                </div>
             </div>
+            <br>
             <input type="hidden" id="enteredQuery" th:value="${query}">
         </div>
         <script>

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.owngoogle.storage.StorageResult.empty;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,8 +65,9 @@ public class SearchControllerIntegrationTest {
 
 	@Test
 	public void searchWithoutResults() throws Exception {
-
 		final String query = "www.site.com";
+		when(siteStorage.find(eq(query), eq(0), eq("rel"))).thenReturn(empty());
+
 		final MvcResult mvcResult = mvc.perform(get("/search?q=" + query))
 				.andExpect(status().isOk())
 				.andReturn();

@@ -23,6 +23,7 @@ public class SearchController {
 
 	@GetMapping(path = "/")
 	public String startPage(Model model) {
+		model.addAttribute("sort", SORTING_RELEVANCE);
 		return "search";
 	}
 

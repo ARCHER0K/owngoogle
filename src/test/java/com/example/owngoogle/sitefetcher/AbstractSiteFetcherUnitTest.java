@@ -2,7 +2,6 @@ package com.example.owngoogle.sitefetcher;
 
 import com.example.owngoogle.storage.ISiteStorage;
 import com.example.owngoogle.storage.StorageItem;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

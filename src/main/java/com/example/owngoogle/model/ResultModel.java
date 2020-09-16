@@ -4,8 +4,8 @@ import java.util.List;
 
 public class ResultModel {
 
-	private int totalHits;
-	private List<SearchItemModel> results;
+	private final int totalHits;
+	private final List<SearchItemModel> results;
 
 	public ResultModel(int totalHits, List<SearchItemModel> results) {
 		this.totalHits = totalHits;

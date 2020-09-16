@@ -1,13 +1,9 @@
 package com.example.owngoogle.controller;
 
-import com.example.owngoogle.OwnGoogleApplication;
-import com.example.owngoogle.service.ISearchService;
 import com.example.owngoogle.service.SearchServiceImpl;
 import com.example.owngoogle.sitefetcher.DummySiteFetcher;
 import com.example.owngoogle.sitefetcher.DummySiteStorage;
-import com.example.owngoogle.sitefetcher.JsoupSiteFetcherImpl;
 import com.example.owngoogle.sitefetcher.SiteFetcherFactory;
-import com.example.owngoogle.storage.SiteStorage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -81,5 +76,23 @@ public class IndexControllerIntegrationTest {
 		Assertions.assertEquals(query, model.get("query"));
 		Assertions.assertEquals(1, model.get("deepness"));
 
+	}
+
+	@Test
+	public void indexActionWithZeroAsDeepnessParameter() throws Exception {
+
+		final String query = "www.site1.com";
+		final MvcResult mvcResult = mvc.perform(post("/index?q=" + query + "&d=0"))
+				.andExpect(status().isBadRequest())
+				.andReturn();
+	}
+
+	@Test
+	public void indexActionWithIncorrectStringAsDeepnessParameter() throws Exception {
+
+		final String query = "www.site1.com";
+		final MvcResult mvcResult = mvc.perform(post("/index?q=" + query + "&d=qqq"))
+				.andExpect(status().isBadRequest())
+				.andReturn();
 	}
 }

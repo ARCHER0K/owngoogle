@@ -13,16 +13,20 @@ repositories {
 }
 
 dependencies {
-	compile 'org.apache.lucene:lucene-core:8.6.2'
-	compile 'org.apache.lucene:lucene-analyzers-common:8.6.2'
-	compile 'org.apache.lucene:lucene-queryparser:8.6.2'
-	compile 'org.jsoup:jsoup:1.13.1'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.3'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	testCompile group: 'junit', name: 'junit', version: '4.13'
-	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.10'
+	compile (
+			'org.apache.lucene:lucene-core:8.6.2',
+			'org.apache.lucene:lucene-analyzers-common:8.6.2',
+			'org.apache.lucene:lucene-queryparser:8.6.2',
+			'org.jsoup:jsoup:1.13.1',
+			'org.apache.logging.log4j:log4j-api:2.13.3',
+			'org.apache.logging.log4j:log4j-core:2.13.3',
+			'org.springframework.boot:spring-boot-starter-web',
+			'org.springframework.boot:spring-boot-starter-thymeleaf'
+	)
+	testCompile (
+			'junit:junit:4.13',
+			'org.mockito:mockito-core:3.5.10'
+	)
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

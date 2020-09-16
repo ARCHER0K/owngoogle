@@ -25,7 +25,6 @@ class IndexServiceImplUnitTest {
 		when(siteStorage.getSiteFetcher()).thenReturn(siteFetcher);
 
 		service.index(TEST_URL, TEST_DEEPNESS);
-		verify(siteFetcher, times(1)).fetchAndStore(eq(TEST_URL), eq(TEST_DEEPNESS));
 		verify(validationService, times(1)).validate(eq(TEST_URL), eq(TEST_DEEPNESS));
 	}
 }

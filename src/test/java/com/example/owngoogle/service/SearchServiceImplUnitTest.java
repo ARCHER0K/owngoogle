@@ -27,7 +27,8 @@ class SearchServiceImplUnitTest {
 	private static final String TEST_BODY_2 = "TEST_BODY_VALUE_2";
 
 	private final ISiteStorage siteStorage = mock(ISiteStorage.class);
-	private final ISearchService searchService = new SearchServiceImpl(siteStorage);
+	private final ISearchValidationService validationService = mock(ISearchValidationService.class);
+	private final ISearchService searchService = new SearchServiceImpl(siteStorage, validationService);
 
 	@Test
 	public void returnEmptyListWhenStorageDoesNotReturnData() {

@@ -30,11 +30,12 @@ class SearchControllerUnitTest {
 
 	@Test
 	public void returnSearchPageOnAction() {
+		when(searchService.find(any(), eq(0), eq("rel"))).thenReturn(new ResultModel(0, new ArrayList<>()));
 		final ExtendedModelMap model = new ExtendedModelMap();
-		final String result = searchController.searchPage(model, null, 0, "rel");
+
+		final String result = searchController.searchPage(model, null, 1, "rel");
 		final List<SearchItemModel> searchResult = new ArrayList<>();
-		when(searchService.find(any(), any(), "rel")).thenReturn(new ResultModel(0, new ArrayList<>()));
-		verify(searchService, times(1)).find(eq(null), eq(0), "rel");
+		verify(searchService, times(1)).find(eq(null), eq(0), eq("rel"));
 		assertEquals("search", result);
 		assertNull(model.get("query"));
 		assertEquals(searchResult, model.get("results"));
@@ -42,11 +43,11 @@ class SearchControllerUnitTest {
 
 	@Test
 	public void putQueryToModel() {
+		when(searchService.find(any(), eq(0), eq("rel"))).thenReturn(new ResultModel(0, new ArrayList<>()));
 		final ExtendedModelMap model = new ExtendedModelMap();
-		final String result = searchController.searchPage(model, TEST_QUERY_PARAMETER, 0, "rel");
+		final String result = searchController.searchPage(model, TEST_QUERY_PARAMETER, 1, "rel");
 		final List<SearchItemModel> searchResult = new ArrayList<>();
-		when(searchService.find(any(), any(), "rel")).thenReturn(new ResultModel(0, new ArrayList<>()));
-		verify(searchService, times(1)).find(eq(TEST_QUERY_PARAMETER), eq(0), "rel");
+		verify(searchService, times(1)).find(eq(TEST_QUERY_PARAMETER), eq(0), eq("rel"));
 		assertEquals("search", result);
 		assertEquals(TEST_QUERY_PARAMETER, model.get("query"));
 		assertEquals(searchResult, model.get("results"));

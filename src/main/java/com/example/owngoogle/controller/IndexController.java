@@ -26,7 +26,7 @@ public class IndexController {
 	@PostMapping
 	public String indexAction(Model model,
 	                          @RequestParam(name = "q")  String query,
-	                          @RequestParam(required = false, defaultValue = "1")  Integer deepness) {
+	                          @RequestParam(name = "d", required = false, defaultValue = "1")  Integer deepness) {
 
 		indexService.index(query, deepness);
 

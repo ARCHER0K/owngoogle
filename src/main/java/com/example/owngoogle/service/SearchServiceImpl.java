@@ -13,15 +13,17 @@ public class SearchServiceImpl implements ISearchService {
 	private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
 
 	private final ISiteStorage siteStorage;
+	private final ISearchValidationService validationService;
 
-	public SearchServiceImpl(ISiteStorage siteStorage) {
+	public SearchServiceImpl(ISiteStorage siteStorage, ISearchValidationService validationService) {
 		this.siteStorage = siteStorage;
+		this.validationService = validationService;
 	}
 
 	@Override
 	public ResultModel find(String query, int page, String sort) {
-
 		log.info("Search with query: {}, page: {}, sort: {}", query, page, sort);
+		validationService.validate(query, page, sort);
 		final StorageResult storageResult = siteStorage.find(query, page, sort);
 		log.info("Search with query {} returns {} results", query, storageResult.getItems().size());
 

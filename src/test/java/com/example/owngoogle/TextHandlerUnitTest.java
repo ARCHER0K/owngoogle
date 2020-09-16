@@ -42,6 +42,6 @@ class TextHandlerUnitTest {
 	@Test
 	void returnEmptyResult() {
 		final String result = textHandler.prepareText("qwert asdfg zxcvb", "asdqwe");
-		Assertions.assertNull(result);
+		Assertions.assertEquals("qwert asdf", result);
 	}
 }

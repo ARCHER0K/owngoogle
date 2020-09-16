@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Homemade google:: Search</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+        <style>
+            .highlight{
+                  background:yellow;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <form action="/search" method="post">
+                Enter text to search:
+                <input type="text" id="query" name="q" required th:value="${query}">
+                <br> Sorting:
+                <input type="radio" name="s" value="rel" th:checked="${sort == 'rel'}"> By Relevance
+                <input type="radio" name="s" value="abc" th:checked="${sort == 'abc'}"> Alphabetically
+                <br><input type="submit" id="submit" value="Search">
+            </form>
+        </div>
+
+        <div th:if= "${query != null}">
+            <hr>
+            <div th:switch="${not #lists.isEmpty(results)}" id="result">
+                <div th:case="${false}">Search results are empty</div>
+                <div th:case="${true}">
+                    <div th:text="'Search result for <<' + ${query} + '>>: '" style="padding-bottom:10px;"></div>
+                    <th:block th:each="item : ${results}">
+                        <div style="padding-bottom:20px;" id="lineItem">
+                            <div th:text="${item.description}" style="color:blue;"></div>
+                            <div th:text="${item.link}" style="color:green;" id="link"></div>
+                            <div th:text="${item.text}"></div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <div  th:if="${totalHits > 10*page}">
+                <form action="/search" method="post">
+                    <input type="hidden" id="oldQuery" name="q" required th:value="${query}">
+                    <input type="hidden" name="p" th:value="${page + 1}">
+                    <input type="submit" id="sbmt" value="Load more...">
+                </form>
+            </div>
+            <input type="hidden" id="enteredQuery" th:value="${query}">
+        </div>
+        <script>
+            var lineItem = $("#lineItem");
+            var linkItem = lineItem.find("#link")
+            var link = linkItem.text();
+
+            $(lineItem).click(function(){
+                window.location.href = "//" + link;
+            });
+
+            function replaceText(element, searchWord) {
+                var custFilter = new RegExp(searchWord, "g");
+                var repStr = "<span class='highlight'>" + searchWord + "</span>";
+                element.each(function() {
+                   $(this).html($(this).html().replace(custFilter, repStr));
+                })
+            }
+
+            replaceText(linkItem, 'search');
+            var query = $("#enteredQuery").val();
+            var words = query.split(new RegExp("[ ,]"))
+            words.forEach(function(item, i, arr) {
+                if (item.length > 0) {
+                    var resultsBody = $("#result");
+                    replaceText(resultsBody, item);
+                    replaceText(resultsBody, item.toUpperCase());
+                    replaceText(resultsBody, item.toLowerCase());
+                }
+            });
+        </script>
+    </body>
+</html>

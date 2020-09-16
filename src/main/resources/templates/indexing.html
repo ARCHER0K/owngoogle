@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Homemade google:: Index</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    </head>
+    <body>
+
+        <div th:if="${query}">
+            <span th:text="'Site ' + ${query} + ' was added to indexing queue.'"></span>
+            <br>
+            <span th:text="'deepness value is ' + ${deepness}"></span>
+            <hr><br>
+        </div>
+
+        <form action="/index" method="post">
+            <div>
+                Enter URL to index:
+                <input type="edit" id="query" name="q" required pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})">
+            </div>
+            <div>
+                <span>You can define deepness value(default value is 1): </span>
+                <input type="checkbox" id="deepCheck"> <input type="number" id="deepness" disabled name="deepness" max="3" min="1" value="1"/>
+            </div>
+            <br>
+            <input type="Submit" value="Index"/>
+        </form>
+
+        <script>
+            $("#deepCheck").click(function(){
+                if ($(this).prop("checked")) {
+                    $("#deepness").prop("disabled", false);
+                } else {
+                    $("#deepness").prop("disabled", true);
+                }
+            });
+        </script>
+    </body>
+</html>

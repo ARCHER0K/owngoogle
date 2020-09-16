@@ -24,7 +24,7 @@ class SearchControllerUnitTest {
 
 	@Test
 	public void returnSearchPageName() {
-		final String result = searchController.startPage(null);
+		final String result = searchController.startPage(new ExtendedModelMap());
 		assertEquals("search", result);
 	}
 
